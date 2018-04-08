@@ -26,6 +26,7 @@ kops create cluster \
     ${NAME}
 ```
 
+
 ```bash
 terraform output -json | docker run --rm -i OlegGorJ/gensubnets:0.1 | pbcopy
 
