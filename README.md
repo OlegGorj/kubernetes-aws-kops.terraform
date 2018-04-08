@@ -4,7 +4,9 @@
 
  ## tldr
 
- ```bash
+First step is to create base infrastructure for k8s cluster - vpc, subnets and routing components
+
+```bash
  terraform apply -var name=yourdomain.com
 
 ```
