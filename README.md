@@ -48,6 +48,32 @@ kops update cluster \
 terraform apply -var name=yourdomain.com
 ```
 
+---
+
+## using a subdomain
+
+If you want all of your dns records to live under a subdomain in its own hosted zone, you need to setup route delegation to the new zone. After running
+`terraform apply -var name=k8s.yourdomain.com` , you can run the following commands to setup the delegation:
+
+```bash
+cat update-zone.json \
+ | jq ".Changes[].ResourceRecordSet.Name=\"$(terraform output name).\"" \
+ | jq ".Changes[].ResourceRecordSet.ResourceRecords=$(terraform output -json name_servers | jq '.value|[{"Value": .[]}]')" \
+ > update-zone.json
+
+aws --profile=default route53 change-resource-record-sets \
+ --hosted-zone-id $(aws --profile=default route53 list-hosted-zones | jq -r '.HostedZones[] | select(.Name=="yourdomain.com.") | .Id' | sed 's/\/hostedzone\///') \
+ --change-batch file://update-zone.json
+```
+
+Wait until your changes propagate before continuing. You are good to go when command
+
+```bash
+host -a k8s.yourdomain.com
+
+```
+
+returns the correct NS records.
 
 
 
