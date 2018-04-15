@@ -1,6 +1,7 @@
 # kubernetes-aws-kops.terraform
 
- Example code for the Deploy Kubernetes in an Existing AWS VPC with Kops and Terraform
+ Project to test deployemnt of Kubernetes in AWS VPC using Kops and Terraform
+
 
  ## tldr
 
@@ -28,6 +29,7 @@ kops create cluster \
     ${NAME}
 ```
 
+Take vpc and subnets description output from TF and pass it to `gensubnets` module which runs in Docker container
 
 ```bash
 terraform output -json | docker run --rm -i OlegGorJ/gensubnets:0.1 | pbcopy
